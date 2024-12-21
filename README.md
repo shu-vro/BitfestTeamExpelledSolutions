@@ -1,6 +1,6 @@
 # BitfestTeamExpelledSolutions
 
-## Challange 1
+## Challenge 1
 
 Here we have trained an `mBART` model, specifically `mbart-large-50` model, which is a very good choice for working under low hardware resources and has 50 language support out of the box.
 
