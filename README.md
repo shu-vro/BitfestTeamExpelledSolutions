@@ -2,7 +2,7 @@
 
 ## Challenge 2
 
-This project is an Express.js API that provides endpoints for managing favorite recipes and ingredients. The API includes routes for adding, updating, and retrieving recipes and ingredients.
+This project is an Express.js API that provides endpoints for managing favorite recipes and ingredients. The API includes routes for adding, updating, and retrieving recipes and ingredients, as well as interacting with a chatbot.
 
 ### Getting Started
 
@@ -15,17 +15,16 @@ This project is an Express.js API that provides endpoints for managing favorite 
 
 1. Clone the repository
 2. Navigate to the `challange2` directory
-3. Install the dependencies
+3. set up **`postgresql`**. used as database.
+4. Install the dependencies
 
 ```sh
 npm install
 ```
 
-4. Create a `.env` file in the challange2
-   directory with the following content:
+5. Create a `.env` file in the `challange2` directory with the following content:
 
 ```
-DATABASE_URL=your_database_url
 GROQ_API_KEY=your_groq_api_key
 ```
 
@@ -62,8 +61,7 @@ The server will start at `http://localhost:3000`.
 -   **Response:**
     ```json
     {
-        "message": "Recipe added successfully.",
-        "favoriteRecipes": ["Your recipe text here"]
+        "message": "Recipe added successfully."
     }
     ```
 
@@ -74,7 +72,7 @@ The server will start at `http://localhost:3000`.
 -   **Response:**
     ```json
     {
-        "favoriteRecipes": ["Your recipe text here"]
+        "favoriteRecipes": [{ "id": 1, "recipe_text": "Your recipe text here" }]
     }
     ```
 
@@ -96,11 +94,7 @@ The server will start at `http://localhost:3000`.
 -   **Response:**
     ```json
     {
-        "message": "Ingredients added successfully.",
-        "ingredients": [
-            { "name": "ingredient1", "quantity": 1 },
-            { "name": "ingredient2", "quantity": 2 }
-        ]
+        "message": "Ingredients added successfully."
     }
     ```
 
@@ -137,15 +131,26 @@ The server will start at `http://localhost:3000`.
     }
     ```
 
+#### Chatbot
+
+##### Interact with the Chatbot
+
+-   **URL:** `/api/v1/chat`
+-   **Method:** `GET`
+-   **Query Parameters:**
+    -   `message`: The message to send to the chatbot
+-   **Response:**
+    ```json
+    {
+        "response": "Chatbot response here"
+    }
+    ```
+
 ### Middleware
 
 The API uses the following middleware:
 
--   `express.json()` and express.urlencoded()
-    for parsing JSON and URL-encoded request bodies
--   `morgan`
-    for logging HTTP requests
--   `helmet`
-    for securing HTTP headers
--   `express-rate-limit`
-    for rate limiting
+-   `express.json()` and `express.urlencoded()` for parsing JSON and URL-encoded request bodies
+-   `morgan` for logging HTTP requests
+-   `helmet` for securing HTTP headers
+-   `express-rate-limit` for rate limiting
