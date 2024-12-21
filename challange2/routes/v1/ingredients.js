@@ -114,6 +114,59 @@ router.put("/update", async (req, res) => {
     }
 });
 
+// Route: Cook an ingredient (decrease quantity)
+router.put(
+    "/cook",
+    body("name").isString().withMessage("Name is required."),
+    body("quantity")
+        .isInt({ min: 1 })
+        .withMessage("Quantity must be a positive integer."),
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+        const { name, quantity } = req.body;
+        if (!name) {
+            return res.status(400).json({ message: "Name is required." });
+        }
+
+        try {
+            const result = await client.query(
+                "SELECT quantity FROM ingredients WHERE name = $1",
+                [name]
+            );
+            if (result.rows.length === 0) {
+                return res
+                    .status(404)
+                    .json({ message: "Ingredient not found." });
+            }
+
+            const currentQuantity = result.rows[0].quantity;
+            const newQuantity = currentQuantity - quantity;
+
+            if (newQuantity < 0) {
+                return res
+                    .status(400)
+                    .json({ message: "Insufficient quantity to cook." });
+            }
+
+            const updateResult = await client.query(
+                "UPDATE ingredients SET quantity = $1 WHERE name = $2 RETURNING *",
+                [newQuantity, name]
+            );
+
+            res.json({
+                message: "Ingredient cooked successfully.",
+                ingredient: updateResult.rows[0],
+            });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ message: "Database error." });
+        }
+    }
+);
+
 // Route: Get all available ingredients
 router.get("/", async (req, res) => {
     try {
