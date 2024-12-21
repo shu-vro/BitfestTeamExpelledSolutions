@@ -1,45 +1,86 @@
 import express from "express";
-const router = express.Router();
 import dotenv from "dotenv";
 import { body, validationResult } from "express-validator";
-dotenv.config();
 import pg from "pg";
+import { fetchRecipe } from "../../llm/model.js";
 
-const client = new pg.Client({
+dotenv.config({
+    path: "../.env",
+});
+
+const router = express.Router();
+
+const clientConfig = {
     user: "postgres",
     password: "postgres",
     host: "127.0.0.1",
     port: 5432,
     database: "postgres",
+};
+
+async function createTableIfNotExists() {
+    const client = new pg.Client(clientConfig);
+
+    try {
+        await client.connect();
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS favorite_recipes (
+                id SERIAL PRIMARY KEY,
+                recipe_text TEXT NOT NULL
+            );
+        `);
+        console.log("Table `favorite_recipes` created successfully");
+    } catch (error) {
+        console.error("Error creating table", error);
+    } finally {
+        await client.end();
+    }
+}
+
+async function fetchIngredients() {
+    const client = new pg.Client(clientConfig);
+
+    try {
+        await client.connect();
+        const result = await client.query(
+            "SELECT name, quantity FROM ingredients"
+        );
+        return result.rows
+            .map((ing) => `${ing.name}: (${ing.quantity})`)
+            .join(", ");
+    } catch (err) {
+        console.error("Database error:", err);
+        return [];
+    } finally {
+        await client.end();
+    }
+}
+
+createTableIfNotExists();
+
+// Route: Suggest a recipe from model.js
+router.get("/suggest", async (req, res) => {
+    try {
+        const ingredients = await fetchIngredients();
+        const response = await fetchRecipe(ingredients);
+
+        // Add response to db
+        const client = new pg.Client(clientConfig);
+        await client.connect();
+        await client.query(
+            "INSERT INTO favorite_recipes (recipe_text) VALUES ($1)",
+            [response]
+        );
+        await client.end();
+
+        res.json({ response });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Error suggesting recipe." });
+    }
 });
 
-client
-    .connect()
-    .then(() => {
-        console.log("Connected to database");
-
-        client
-            .query(
-                `
-        CREATE TABLE IF NOT EXISTS favorite_recipes (
-            id SERIAL PRIMARY KEY,
-            recipe_text TEXT NOT NULL
-        );
-    `
-            )
-            .then(() => {
-                console.log("Table `favorite_recipes` created successfully");
-            })
-            .catch((error) => {
-                console.log("Error creating table", error);
-            });
-    })
-    .catch((error) => {
-        console.log("Error connecting to database", error);
-        console.log("please connect to a postgres database.");
-    });
-
-// Route: Add a new favorite recipe (from image or text)
+// Route: Add a new favorite recipe
 router.post(
     "/add",
     body("recipeText").isString().withMessage("Recipe text is required."),
@@ -49,13 +90,11 @@ router.post(
             return res.status(400).json({ errors: errors.array() });
         }
         const { recipeText } = req.body;
-        if (!recipeText) {
-            return res
-                .status(400)
-                .json({ message: "Recipe text is required." });
-        }
+
+        const client = new pg.Client(clientConfig);
 
         try {
+            await client.connect();
             await client.query(
                 "INSERT INTO favorite_recipes (recipe_text) VALUES ($1)",
                 [recipeText]
@@ -64,18 +103,25 @@ router.post(
         } catch (err) {
             console.error(err);
             res.status(500).json({ message: "Database error." });
+        } finally {
+            await client.end();
         }
     }
 );
 
 // Route: Retrieve all favorite recipes
 router.get("/", async (req, res) => {
+    const client = new pg.Client(clientConfig);
+
     try {
+        await client.connect();
         const result = await client.query("SELECT * FROM favorite_recipes");
         res.json({ favoriteRecipes: result.rows });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Database error." });
+    } finally {
+        await client.end();
     }
 });
 

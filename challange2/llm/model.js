@@ -7,7 +7,6 @@ dotenv.config({
 
 const llm = new ChatGroq({
     model: "llama-3.3-70b-versatile",
-    // model: "llama-3.3-70b-versatile",
     temperature: 0,
     max_tokens: null,
     timeout: null,
@@ -47,35 +46,29 @@ const llm = new ChatGroq({
 //     Suggest a recipe based on the available ingredients. The recipe should be simple and easy to follow.
 //     `;
 
-const messages = [
-    {
-        role: "system",
-        content: "context",
-    },
-    {
-        role: "user",
-        content: "Suggest a recipe based on the following ingredients.",
-    },
-    {
-        role: "ai",
-        content:
-            "Sure, I can help with that. Please provide the list of available ingredients.",
-    },
-];
-
-async function fetchRecipe(
-    message = "Suggest a recipe based on the available ingredients."
-) {
-    const ingredients = await fetchIngredients();
-    messages.push({
-        role: "user",
-        content: `Available ingredients: ${ingredientList}`,
-    });
-
-    const ingredientList = ingredients
-        .map((ing) => `${ing.name}: (${ing.quantity})`)
-        .join(", ");
-    messages.push({ role: "user", content: message });
+async function fetchRecipe(ingredients = "") {
+    const messages = [
+        {
+            role: "system",
+            content: `
+Available ingredients: ${ingredients}
+Suggest a recipe based on the available ingredients. The recipe should be simple and easy to follow.
+`,
+        },
+        {
+            role: "user",
+            content: "Suggest a recipe based on the following ingredients.",
+        },
+        {
+            role: "ai",
+            content:
+                "Sure, I can help with that. Please provide the list of available ingredients.",
+        },
+        {
+            role: "user",
+            content: ingredients,
+        },
+    ];
 
     const ai_msg = await llm.invoke(messages);
     messages.push({ role: "assistant", content: ai_msg.content });

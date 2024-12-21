@@ -10,12 +10,13 @@ This project is an Express.js API that provides endpoints for managing favorite 
 
 -   Node.js
 -   npm
+-   PostgreSQL
 
 #### Installation
 
 1. Clone the repository
 2. Navigate to the `challange2` directory
-3. set up **`postgresql`**. used as database.
+3. Set up **PostgreSQL** as the database.
 4. Install the dependencies
 
 ```sh
@@ -73,6 +74,17 @@ The server will start at `http://localhost:3000`.
     ```json
     {
         "favoriteRecipes": [{ "id": 1, "recipe_text": "Your recipe text here" }]
+    }
+    ```
+
+##### Suggest a Recipe
+
+-   **URL:** `/api/v1/recipes/suggest`
+-   **Method:** `GET`
+-   **Response:**
+    ```json
+    {
+        "response": "Suggested recipe based on available ingredients."
     }
     ```
 

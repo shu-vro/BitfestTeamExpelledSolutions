@@ -26,7 +26,9 @@ async function fetchIngredients() {
             "SELECT name, quantity FROM ingredients"
         );
         await client.end();
-        return result.rows;
+        return result.rows
+            .map((ing) => `${ing.name}: (${ing.quantity})`)
+            .join(", ");
     } catch (err) {
         console.error("Database error:", err);
         return [];
@@ -46,13 +48,9 @@ router.get(
 
         try {
             const ingredients = await fetchIngredients();
-            const ingredientList = ingredients
-                .map((ing) => `${ing.name}: (${ing.quantity})`)
-                .join(", ");
-            console.log(ingredientList);
             prevChats.push({
                 role: "human",
-                content: `available ingredients: ${ingredientList}`,
+                content: `available ingredients: ${ingredients}`,
             });
             prevChats.push({ role: "human", content: message });
             const chatResponse = await chatbot(prevChats || []);
