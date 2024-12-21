@@ -1,5 +1,15 @@
 # BitfestTeamExpelledSolutions
 
+## Challange 1
+
+Here we have trained an `mBART` model, specifically `mbart-large-50` model, which is a very good choice for working under low hardware resources and has 50 language support out of the box.
+
+We have finetuned this model to enable it for `banglish` to `pure bangla` text generation. For that we have used `https://huggingface.co/datasets/SKNahin/bengali-transliteration-data` dataset.
+
+To train the model we have used `PyTorch`. And for loading datasets and models we have used huggingface `datasets` and `transformers` libraries respectively.
+
+The model can be found in huggingface: https://huggingface.co/mhabrar/BitfestTeamExpelledSolutionMode.
+
 ## Challenge 2
 
 This project is an Express.js API that provides endpoints for managing favorite recipes and ingredients. The API includes routes for adding, updating, and retrieving recipes and ingredients, as well as interacting with a chatbot.
