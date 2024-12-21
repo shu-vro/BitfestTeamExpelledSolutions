@@ -14,38 +14,6 @@ const llm = new ChatGroq({
     // other params...
 });
 
-// const client = new pg.Client({
-//     user: "postgres",
-//     password: "postgres",
-//     host: "127.0.0.1",
-//     port: 5432,
-//     database: "postgres",
-// });
-
-// async function fetchIngredients() {
-//     try {
-//         await client.connect();
-//         const result = await client.query(
-//             "SELECT name, quantity FROM ingredients"
-//         );
-//         await client.end();
-//         return result.rows;
-//     } catch (err) {
-//         console.error("Database error:", err);
-//         return [];
-//     }
-// }
-
-// const ingredients = await fetchIngredients();
-// const ingredientList = ingredients
-// .map((ing) => `${ing.name}: (${ing.quantity})`)
-// .join(", ");
-
-// const context = `
-//     Available ingredients: ${ingredientList}
-//     Suggest a recipe based on the available ingredients. The recipe should be simple and easy to follow.
-//     `;
-
 async function fetchRecipe(ingredients = "") {
     const messages = [
         {

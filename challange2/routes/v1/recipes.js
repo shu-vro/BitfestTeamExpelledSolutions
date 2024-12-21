@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import { body, validationResult } from "express-validator";
 import pg from "pg";
 import { fetchRecipe } from "../../llm/model.js";
+import { inferFromImage } from "../../llm/imagemodel.js";
 
 dotenv.config({
     path: "../.env",
@@ -100,6 +101,36 @@ router.post(
                 [recipeText]
             );
             res.json({ message: "Recipe added successfully." });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ message: "Database error." });
+        } finally {
+            await client.end();
+        }
+    }
+);
+
+// Route: Add a new favorite recipe from image
+router.post(
+    "/add-from-image",
+    body("recipeImageUrl").isString().withMessage("Recipe text is required."),
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+        const { recipeImageUrl } = req.body;
+
+        const client = new pg.Client(clientConfig);
+
+        try {
+            const recipeText = await inferFromImage(recipeImageUrl);
+            await client.connect();
+            await client.query(
+                "INSERT INTO favorite_recipes (recipe_text) VALUES ($1)",
+                [recipeText]
+            );
+            res.json({ response: recipeText });
         } catch (err) {
             console.error(err);
             res.status(500).json({ message: "Database error." });
