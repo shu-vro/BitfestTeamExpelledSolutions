@@ -1,10 +1,37 @@
 import express from "express";
 import { body, query, validationResult } from "express-validator";
 import { chatbot } from "../../llm/model.js";
+import pg from "pg";
+import dotenv from "dotenv";
+dotenv.config({
+    path: "../.env",
+});
 
 const router = express.Router();
 
 let prevChats = [];
+
+async function fetchIngredients() {
+    const client = new pg.Client({
+        user: "postgres",
+        password: "postgres",
+        host: "127.0.0.1",
+        port: 5432,
+        database: "postgres",
+    });
+
+    try {
+        await client.connect();
+        const result = await client.query(
+            "SELECT name, quantity FROM ingredients"
+        );
+        await client.end();
+        return result.rows;
+    } catch (err) {
+        console.error("Database error:", err);
+        return [];
+    }
+}
 
 // Route: Chatbot interaction
 router.get(
@@ -18,9 +45,19 @@ router.get(
         const { message } = req.query;
 
         try {
-            const chatResponse = await chatbot(prevChats || [], message);
+            const ingredients = await fetchIngredients();
+            const ingredientList = ingredients
+                .map((ing) => `${ing.name}: (${ing.quantity})`)
+                .join(", ");
+            console.log(ingredientList);
+            prevChats.push({
+                role: "human",
+                content: `available ingredients: ${ingredientList}`,
+            });
+            prevChats.push({ role: "human", content: message });
+            const chatResponse = await chatbot(prevChats || []);
             res.json(chatResponse.response);
-            prevChats = chatResponse.messages;
+            prevChats.push({ role: "ai", content: chatResponse.response });
         } catch (err) {
             console.error(err);
             res.status(500).json({ message: "Error processing chat message." });
