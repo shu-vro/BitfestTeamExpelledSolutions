@@ -10,6 +10,32 @@ To train the model we have used `PyTorch`. And for loading datasets and models w
 
 The model can be found in huggingface: https://huggingface.co/mhabrar/BitfestTeamExpelledSolutionMode.
 
+The model was trained for 10 minutes with 1000 steps on a T4 GPU on Google Colab. Since we didn't get anough time to train the model, it's accurary is pretty poor actually :(
+
+After training the loss was `0.85`, which is pretty high! (Again not enough time, not enough epochs! 2-3 epochs would have pulled out better results.)
+
+Here you can see the User Input and User Output Demo:
+
+
+Here is the training parameters used to train this model:
+```
+training_args = Seq2SeqTrainingArguments(
+    output_dir="./results",
+    eval_strategy="epoch",
+    learning_rate=2e-5,
+    per_device_train_batch_size=1,
+    per_device_eval_batch_size=1,
+    weight_decay=0.01,
+    save_total_limit=2,
+    max_steps=1000,
+    predict_with_generate=True,
+    fp16=torch.cuda.is_available(),
+    logging_dir="./logs",
+    logging_steps=100,
+    save_strategy="epoch",
+    report_to="none",
+)
+```
 ## Challenge 2
 
 This project is an Express.js API that provides endpoints for managing favorite recipes and ingredients. The API includes routes for adding, updating, and retrieving recipes and ingredients, as well as interacting with a chatbot.
