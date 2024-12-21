@@ -105,6 +105,23 @@ The server will start at `http://localhost:3000`.
     }
     ```
 
+##### Add a New Favorite Recipe from Image
+
+-   **URL:** `/api/v1/recipes/add-from-image`
+-   **Method:** `POST`
+-   **Request Body:**
+    ```json
+    {
+        "recipeImageUrl": "URL of the recipe image"
+    }
+    ```
+-   **Response:**
+    ```json
+    {
+        "response": "Extracted recipe text from the image"
+    }
+    ```
+
 ##### Retrieve All Favorite Recipes
 
 -   **URL:** `/api/v1/recipes`
