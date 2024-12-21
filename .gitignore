@@ -1,0 +1,7 @@
+**/node_modules
+**/.conda
+**/.ipynb_checkpoints
+**/.vscode
+**/.pytest_cache
+**/__pycache__
+**/venv
