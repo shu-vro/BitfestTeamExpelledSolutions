@@ -1,0 +1,158 @@
+{
+    "clientName": "Thunder Client",
+    "collectionName": "bitfest",
+    "collectionId": "dfa27f46-2515-4a8c-a246-156e1901f09e",
+    "dateExported": "2024-12-22T10:19:08.844Z",
+    "version": "1.2",
+    "folders": [],
+    "requests": [
+        {
+            "_id": "40346cfc-80db-40ec-8dde-573f51e55233",
+            "colId": "dfa27f46-2515-4a8c-a246-156e1901f09e",
+            "containerId": "",
+            "name": "recipe",
+            "url": "http://localhost:3000/api/v1/recipes/",
+            "method": "GET",
+            "sortNum": 10000,
+            "created": "2024-12-22T09:33:42.248Z",
+            "modified": "2024-12-22T09:33:52.585Z",
+            "headers": []
+        },
+        {
+            "_id": "9d42e50f-d5b6-4172-ac39-862ebf79052e",
+            "colId": "dfa27f46-2515-4a8c-a246-156e1901f09e",
+            "containerId": "",
+            "name": "recipe suggest",
+            "url": "http://localhost:3000/api/v1/recipes/suggest?message=make something healthy",
+            "method": "GET",
+            "sortNum": 15000,
+            "created": "2024-12-22T09:55:15.088Z",
+            "modified": "2024-12-22T10:04:09.259Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "message",
+                    "value": "make something healthy",
+                    "isPath": false
+                }
+            ]
+        },
+        {
+            "_id": "2a1784d8-a734-491b-8970-92a21443f29d",
+            "colId": "dfa27f46-2515-4a8c-a246-156e1901f09e",
+            "containerId": "",
+            "name": "recipe add",
+            "url": "http://localhost:3000/api/v1/recipes/add",
+            "method": "POST",
+            "sortNum": 17500,
+            "created": "2024-12-22T10:17:04.786Z",
+            "modified": "2024-12-22T10:18:38.176Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n    \"recipeText\": \"Your recipe text here\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "3c9c2335-cf54-484f-9d59-d1109e8fb553",
+            "colId": "dfa27f46-2515-4a8c-a246-156e1901f09e",
+            "containerId": "",
+            "name": "recipe add from image",
+            "url": "http://localhost:3000/api/v1/recipes/add-from-image",
+            "method": "POST",
+            "sortNum": 18750,
+            "created": "2024-12-22T10:12:00.326Z",
+            "modified": "2024-12-22T10:14:08.743Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n    \"recipeImageUrl\": \"https://d3bjzufjcawald.cloudfront.net/public/web/2024-03-07/65e9594f23b8d/Menu_Category_300x300_Burgers-300.jpg\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "0da4b2c8-13e2-4799-8f39-bd91e6bd5863",
+            "colId": "dfa27f46-2515-4a8c-a246-156e1901f09e",
+            "containerId": "",
+            "name": "ingredients",
+            "url": "http://localhost:3000/api/v1/ingredients",
+            "method": "GET",
+            "sortNum": 20000,
+            "created": "2024-12-22T09:34:49.129Z",
+            "modified": "2024-12-22T09:34:58.718Z",
+            "headers": []
+        },
+        {
+            "_id": "95d62f2a-208b-46f2-a283-0833f9b8ab2b",
+            "colId": "dfa27f46-2515-4a8c-a246-156e1901f09e",
+            "containerId": "",
+            "name": "update ingredients",
+            "url": "http://localhost:3000/api/v1/ingredients/update",
+            "method": "PUT",
+            "sortNum": 30000,
+            "created": "2024-12-22T09:35:24.241Z",
+            "modified": "2024-12-22T09:36:53.999Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"ginger\",\n  \"quantity\": 10\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "6767b569-8874-4cba-a777-c853e93f7260",
+            "colId": "dfa27f46-2515-4a8c-a246-156e1901f09e",
+            "containerId": "",
+            "name": "cook ingredients",
+            "url": "http://localhost:3000/api/v1/ingredients/cook",
+            "method": "PUT",
+            "sortNum": 40000,
+            "created": "2024-12-22T09:37:24.851Z",
+            "modified": "2024-12-22T09:38:52.667Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"ginger\",\n  \"quantity\": 1\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "70eef47f-56b7-46a6-9b2f-bd9ed6dbba8b",
+            "colId": "dfa27f46-2515-4a8c-a246-156e1901f09e",
+            "containerId": "",
+            "name": "ingredients add",
+            "url": "http://localhost:3000/api/v1/ingredients/add",
+            "method": "POST",
+            "sortNum": 45000,
+            "created": "2024-12-22T09:43:08.992Z",
+            "modified": "2024-12-22T09:54:17.039Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"items\": [\n      {\n        \"name\": \"sugar\",\n        \"quantity\": 7\n      },\n      {\n        \"name\": \"ginger\",\n        \"quantity\": 10\n      },\n      {\n        \"name\": \"carrot\",\n        \"quantity\": 3\n      }\n    ]\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "219033ea-9c1a-48ee-8cc2-5c5bee92e9ad",
+            "colId": "dfa27f46-2515-4a8c-a246-156e1901f09e",
+            "containerId": "",
+            "name": "chat",
+            "url": "http://localhost:3000/api/v1/chat?message=make something sweet!",
+            "method": "GET",
+            "sortNum": 50000,
+            "created": "2024-12-22T09:40:28.805Z",
+            "modified": "2024-12-22T09:41:49.505Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "message",
+                    "value": "make something sweet!",
+                    "isPath": false
+                }
+            ]
+        }
+    ],
+    "ref": "sdd3PTZy87nqSCVcM7HQSw-3bGGkTc8A6t6MqXHlQPZgwEP8cg7vSzzpAsl1Rrftn7ESalqLhVfVpdZekfWeog"
+}
