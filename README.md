@@ -138,6 +138,8 @@ The server will start at `http://localhost:3000`.
 
 -   **URL:** `/api/v1/recipes/suggest`
 -   **Method:** `GET`
+-   **Query Parameters:**
+    -   `message`: The message to send to the chatbot _(optionial)_
 -   **Response:**
     ```json
     {

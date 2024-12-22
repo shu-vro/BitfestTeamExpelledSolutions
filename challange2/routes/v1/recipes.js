@@ -1,6 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-import { body, validationResult } from "express-validator";
+import { body, query, validationResult } from "express-validator";
 import pg from "pg";
 import { fetchRecipe } from "../../llm/model.js";
 import { inferFromImage } from "../../llm/imagemodel.js";
@@ -58,8 +58,12 @@ createTableIfNotExists();
 // Route: Suggest a recipe from model.js
 router.get("/suggest", async (req, res) => {
     try {
+        let { message } = req.query;
+        if (!message) {
+            message = "Suggest a recipe based on the following ingredients.";
+        }
         const ingredients = await fetchIngredients();
-        const response = await fetchRecipe(ingredients);
+        const response = await fetchRecipe(ingredients, message);
 
         // Add response to db
         const client = await pool.connect();

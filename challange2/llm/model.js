@@ -14,7 +14,7 @@ const llm = new ChatGroq({
     // other params...
 });
 
-async function fetchRecipe(ingredients = "") {
+async function fetchRecipe(ingredients = "", message = "") {
     const messages = [
         {
             role: "system",
@@ -25,7 +25,7 @@ Suggest a recipe based on the available ingredients. The recipe should be simple
         },
         {
             role: "user",
-            content: "Suggest a recipe based on the following ingredients.",
+            content: message,
         },
         {
             role: "ai",
