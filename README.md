@@ -66,6 +66,7 @@ npm install
 
 ```
 GROQ_API_KEY=your_groq_api_key
+DATABASE_URL=postgres://postgres:postgres@127.0.0.1:5432/postgres
 ```
 
 #### Running the Server

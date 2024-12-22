@@ -12,18 +12,15 @@ dotenv.config({
 const router = express.Router();
 
 const clientConfig = {
-    user: "postgres",
-    password: "postgres",
-    host: "127.0.0.1",
-    port: 5432,
-    database: "postgres",
+    connectionString: process.env.DATABASE_URL,
 };
 
+const pool = new pg.Pool(clientConfig);
+
 async function createTableIfNotExists() {
-    const client = new pg.Client(clientConfig);
+    const client = await pool.connect();
 
     try {
-        await client.connect();
         await client.query(`
             CREATE TABLE IF NOT EXISTS favorite_recipes (
                 id SERIAL PRIMARY KEY,
@@ -34,15 +31,14 @@ async function createTableIfNotExists() {
     } catch (error) {
         console.error("Error creating table", error);
     } finally {
-        await client.end();
+        client.release();
     }
 }
 
 async function fetchIngredients() {
-    const client = new pg.Client(clientConfig);
+    const client = await pool.connect();
 
     try {
-        await client.connect();
         const result = await client.query(
             "SELECT name, quantity FROM ingredients"
         );
@@ -53,7 +49,7 @@ async function fetchIngredients() {
         console.error("Database error:", err);
         return [];
     } finally {
-        await client.end();
+        client.release();
     }
 }
 
@@ -66,13 +62,15 @@ router.get("/suggest", async (req, res) => {
         const response = await fetchRecipe(ingredients);
 
         // Add response to db
-        const client = new pg.Client(clientConfig);
-        await client.connect();
-        await client.query(
-            "INSERT INTO favorite_recipes (recipe_text) VALUES ($1)",
-            [response]
-        );
-        await client.end();
+        const client = await pool.connect();
+        try {
+            await client.query(
+                "INSERT INTO favorite_recipes (recipe_text) VALUES ($1)",
+                [response]
+            );
+        } finally {
+            client.release();
+        }
 
         res.json({ response });
     } catch (err) {
@@ -92,10 +90,9 @@ router.post(
         }
         const { recipeText } = req.body;
 
-        const client = new pg.Client(clientConfig);
+        const client = await pool.connect();
 
         try {
-            await client.connect();
             await client.query(
                 "INSERT INTO favorite_recipes (recipe_text) VALUES ($1)",
                 [recipeText]
@@ -105,7 +102,7 @@ router.post(
             console.error(err);
             res.status(500).json({ message: "Database error." });
         } finally {
-            await client.end();
+            client.release();
         }
     }
 );
@@ -113,7 +110,9 @@ router.post(
 // Route: Add a new favorite recipe from image
 router.post(
     "/add-from-image",
-    body("recipeImageUrl").isString().withMessage("Recipe text is required."),
+    body("recipeImageUrl")
+        .isString()
+        .withMessage("Recipe image URL is required."),
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -121,11 +120,10 @@ router.post(
         }
         const { recipeImageUrl } = req.body;
 
-        const client = new pg.Client(clientConfig);
+        const client = await pool.connect();
 
         try {
             const recipeText = await inferFromImage(recipeImageUrl);
-            await client.connect();
             await client.query(
                 "INSERT INTO favorite_recipes (recipe_text) VALUES ($1)",
                 [recipeText]
@@ -135,24 +133,23 @@ router.post(
             console.error(err);
             res.status(500).json({ message: "Database error." });
         } finally {
-            await client.end();
+            client.release();
         }
     }
 );
 
 // Route: Retrieve all favorite recipes
 router.get("/", async (req, res) => {
-    const client = new pg.Client(clientConfig);
+    const client = await pool.connect();
 
     try {
-        await client.connect();
         const result = await client.query("SELECT * FROM favorite_recipes");
         res.json({ favoriteRecipes: result.rows });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Database error." });
     } finally {
-        await client.end();
+        client.release();
     }
 });
 

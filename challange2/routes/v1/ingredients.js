@@ -5,13 +5,7 @@ import { body, validationResult } from "express-validator";
 dotenv.config();
 import pg from "pg";
 
-const client = new pg.Client({
-    user: "postgres",
-    password: "postgres",
-    host: "127.0.0.1",
-    port: 5432,
-    database: "postgres",
-});
+const client = new pg.Client(process.env.DATABASE_URL);
 
 client
     .connect()

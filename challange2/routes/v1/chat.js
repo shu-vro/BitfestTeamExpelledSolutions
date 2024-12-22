@@ -12,13 +12,7 @@ const router = express.Router();
 let prevChats = [];
 
 async function fetchIngredients() {
-    const client = new pg.Client({
-        user: "postgres",
-        password: "postgres",
-        host: "127.0.0.1",
-        port: 5432,
-        database: "postgres",
-    });
+    const client = new pg.Client(process.env.DATABASE_URL);
 
     try {
         await client.connect();
